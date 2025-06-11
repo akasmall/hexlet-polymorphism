@@ -15,4 +15,5 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-python_files = "tests.py"
+testpaths = ["tests"]
+pythonpath = ["src"]
