@@ -1,42 +1,39 @@
-def convert_sequence(type_data, *iterables):
-    if type_data == "list":
-        return [item for iterable in iterables for item in iterable]
-    elif type_data == "tuple":
-        return tuple(item for iterable in iterables for item in iterable)
-    elif type_data == "set":
-        return {item for iterable in iterables for item in iterable}
-    else:
-        raise ValueError(f"Unsupported type: {type_data}")
+def get_links(tags):
+    return [
+        tag.get("href") if tag["name"] in ["a", "link"] else
+        tag.get("src") if tag["name"] == "img" else None
+        for tag in tags
+        if tag["name"] in ["a", "link", "img"]
+    ]
+
+#  мой первый вариант
+# def get_links(tags):
+#     result = []
+#     for tag in tags:
+#         if tag["name"] in ["a", "link"]:
+#             result.append(tag.get("href"))
+#         elif tag["name"] in ["img"]:
+#             result.append(tag.get("src"))
+#         else:
+#             continue
+#     return result
+
 
 # !решение ментора
-# BEGIN (write your solution here)
-# \\def convert_sequence(target_type, *sequences):
-# \\    convertion_table = {"list": list, "tuple": tuple, "set": set}
+# ?BEGIN (write your solution here)
+# \\MAPPING = {
+# \\    'a': 'href',
+# \\    'img': 'src',
+# \\    'link': 'href',
+# \\}
+
+
+# \\def get_links(tags):
 # \\    result = []
-
-# \\    for sequence in sequences:
-# \\        result.extend(sequence)
-
-# \\    return convertion_table[target_type](result)
+# \\    for tag in tags:
+# \\      name = tag['name']
+# \\      if name in MAPPING:
+# \\          attr = MAPPING[tag['name']]
+# \\          result.append(tag[attr])
+# \\  return result
 # END
-
-# плохой вариант 1
-#     match type_data:
-#         case "list":
-#             result = []
-#         case "tuple":
-#             result = ()
-#         case "set":
-#             result = set()
-
-#     for iterable in iterables:
-#         for item in iterable:
-#             match type_data:
-#                 case "list":
-#                     result.append(item)
-#                 case "tuple":
-#                     result += (item,)
-#                 case "set":
-#                     result.add(item)
-#     return result
-    # return ["a", "c", 1, 2, 3]
