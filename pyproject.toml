@@ -5,7 +5,9 @@ description = "Exercise"
 authors = [{name = "AkaSmall"}]
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "faker>=37.4.0",
+]
 
 [dependency-groups]
 dev = [

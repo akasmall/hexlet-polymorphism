@@ -1,56 +1,55 @@
-from solution import get_links
+from solution import stringify
+from faker import Faker
 
 
-def test_get_links_empty():
-    tags = []
-    links = get_links(tags)
+def test_stringify1():
+    tag = {
+        'name': 'hr',
+        'class': 'px-3',
+        'id': 'myid',
+        'tag_type': 'single',
+    }
+    html = stringify(tag)
 
-    assert links == []
-
-
-def test_get_links1():
-    tags = [
-        {'name': 'p'},
-        {'name': 'a', 'href': 'hexlet.io'},
-        {'name': 'img', 'src': 'hexlet.io/assets/logo.png'},
-    ]
-
-    links = get_links(tags)
-    expected = [
-        'hexlet.io',
-        'hexlet.io/assets/logo.png',
-    ]
-
-    assert links == expected
+    expected = '<hr class="px-3" id="myid">'
+    assert html == expected
 
 
-def test_get_links2():
-    tags = [
-        {'name': 'img', 'src': 'hexlet.io/assets/logo.png'},
-        {'name': 'div'},
-        {'name': 'link', 'href': 'hexlet.io/assets/style.css'},
-        {'name': 'h1'},
-    ]
-    links = get_links(tags)
+def test_stringify2():
+    tag = {
+        'name': 'p',
+        'tag_type': 'pair',
+        'body': 'text',
+    }
+    html = stringify(tag)
 
-    expected = [
-        'hexlet.io/assets/logo.png',
-        'hexlet.io/assets/style.css',
-    ]
-    assert links == expected
+    expected = '<p>text</p>'
+    assert html == expected
 
 
-def test_get_links3():
-    tags = [
-        {'name': 'invalidTag', 'src': 'hexlet.io/assets/invalid.png'},
-        {'name': 'img', 'src': 'hexlet.io/assets/logo.png'},
-        {'name': 'div'},
-        {'name': 'link', 'href': 'hexlet.io/assets/style.css'},
-        {'name': 'h1'},
-    ]
-    links = get_links(tags)
-    expected = [
-        'hexlet.io/assets/logo.png',
-        'hexlet.io/assets/style.css',
-    ]
-    assert links == expected
+def test_stringify3():
+    tag = {
+        'name': 'div',
+        'tag_type': 'pair',
+        'body': 'text2',
+        'id': 'wow',
+    }
+    html = stringify(tag)
+    expected = '<div id="wow">text2</div>'
+    assert html == expected
+
+
+def test_stringify4():
+    fake = Faker()
+    random_attr = fake.word()
+    tag = {
+        'name': 'div',
+        'tag_type': 'pair',
+        'body': 'text2',
+        'id': 'wow',
+        random_attr: 'value',
+    }
+    html = stringify(tag)
+
+    expected = f'<div id="wow" {random_attr}="value">text2</div>'
+    assert html == expected
