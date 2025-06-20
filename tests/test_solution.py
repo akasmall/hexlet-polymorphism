@@ -1,55 +1,44 @@
-from solution import stringify
-from faker import Faker
+from solution import DatabaseConfigLoader
+from pathlib import Path
+import pytest
 
 
-def test_stringify1():
-    tag = {
-        'name': 'hr',
-        'class': 'px-3',
-        'id': 'myid',
-        'tag_type': 'single',
+@pytest.fixture(scope='module')
+def loader():
+    path = Path(__file__).parent / 'fixtures'
+    loader = DatabaseConfigLoader(path)
+    return loader
+
+
+def test_config_loader(loader):
+    expected = {
+        'host': 'google.com',
+        'username': 'postgres',
     }
-    html = stringify(tag)
-
-    expected = '<hr class="px-3" id="myid">'
-    assert html == expected
+    assert loader.load('production') == expected
 
 
-def test_stringify2():
-    tag = {
-        'name': 'p',
-        'tag_type': 'pair',
-        'body': 'text',
+def test_config_loader2(loader):
+    expected = {
+        'username': 'mysupername',
     }
-    html = stringify(tag)
-
-    expected = '<p>text</p>'
-    assert html == expected
+    assert loader.load('custom') == expected
 
 
-def test_stringify3():
-    tag = {
-        'name': 'div',
-        'tag_type': 'pair',
-        'body': 'text2',
-        'id': 'wow',
+def test_config_loader3(loader):
+    expected = {
+        'host': 'localhost',
+        'username': 'postgres',
+        'port': 5000,
     }
-    html = stringify(tag)
-    expected = '<div id="wow">text2</div>'
-    assert html == expected
+    assert loader.load('development') == expected
 
 
-def test_stringify4():
-    fake = Faker()
-    random_attr = fake.word()
-    tag = {
-        'name': 'div',
-        'tag_type': 'pair',
-        'body': 'text2',
-        'id': 'wow',
-        random_attr: 'value',
+def test_config_loader4(loader):
+    expected = {
+        'host': 'dev.server',
+        'username': 'postgres',
+        'port': 5000,
+        'password': 'admin',
     }
-    html = stringify(tag)
-
-    expected = f'<div id="wow" {random_attr}="value">text2</div>'
-    assert html == expected
+    assert loader.load('preproduction') == expected

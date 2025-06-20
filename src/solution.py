@@ -1,115 +1,57 @@
-excluded_attrs = ['name', 'tag_type', 'body']
+import json
 
 
-def get_tag_pair(tag):
-    tag_name = tag["name"]
-    tag_body = tag["body"]
-    result = f'<{tag_name}'
-    for key in tag:
-        if key not in excluded_attrs:
-            result += f' {key}="{tag[key]}"'
-    return result + f'>{tag_body}</{tag_name}>'
+# ?BEGIN (write your solution here)
+class DatabaseConfigLoader:
+    def __init__(self, path):
+        self.path = path
 
+    def load(self, config_name, config_result=None):
+        if config_result is None:
+            # Инициализация словаря при первом вызове
+            config_result = {}
+        config = None
+        filename = str(self.path) + f"/database.{config_name}.json"
+        if filename is not None:
+            with open(filename, "r") as fd:
+                config = json.load(fd)
+        else:
+            raise Exception("Improperly configured")
 
-def get_tag_single(tag):
-    result = f'<{tag["name"]}'
-    for key in tag:
-        if key not in excluded_attrs:
-            result += f' {key}="{tag[key]}"'
-    return result + ">"
+        key_extend = None
+        if config.get("extend"):  # Если есть ключ extend
+            # Берем значение по этому ключу и удаляем
+            key_extend = config.pop("extend")
+            # Рекурсивный вызов с новым аргументом и текущим результатом
+            self.load(key_extend, config)
 
-
-tags_mapping = {
-    "pair": get_tag_pair,
-    "single": get_tag_single,
-}
-
-
-def error_message(*args, **kwargs):
-    return "Error: Invalid language"
-
-
-def stringify(tag):
-    tag_type = tag["tag_type"]
-    if tag_type == "pair":
-        func = tags_mapping.get(tag_type, error_message)
-    elif tag_type == "single":
-        func = tags_mapping.get(tag_type, error_message)
-    else:
-        return error_message()
-
-    return func(tag)
-
-
-#  мой первый вариант
-# def get_tag_pair(tag):
-#     tag_name = tag["name"]
-#     tag_body = tag["body"]
-#     result = f'<{tag_name}'
-#     for key in tag:
-#         if key in ["name", "tag_type", "body"]:
-#             continue
-#         else:
-#             result += f' {key}="{tag[key]}"'
-#     result += f'>{tag_body}</{tag_name}>'
-#     return result
-#     # '<p>text</p>'
-#     # '<div id="wow">text2</div>'
-#     # '<div id="wow" way="value">text2</div>'
-
-
-# def get_tag_single(tag):
-#     result = f'<{tag["name"]}'
-#     for key in tag:
-#         if key in ["name", "tag_type"]:
-#             continue
-#         result += f' {key}="{tag[key]}"'
-#     return result + ">"
-#     # expected = '<hr class="px-3" id="myid">'
-
-
-# def error_message(*args, **kwargs):
-#     return "Error: Invalid language"
-
-
-# tags_mapping = {
-#     "pair": get_tag_pair,
-#     "single": get_tag_single,
-# }
-
-
-# def stringify(tag):
-#     tag_type = tag["tag_type"]
-#     if tag_type == "pair":
-#         func = tags_mapping.get(tag_type, error_message)
-#     elif tag_type == "single":
-#         func = tags_mapping.get(tag_type, error_message)
-#     else:
-#         return error_message()
-
-#     return func(tag)
+        # Объединяем полученный словарь если он есть с общим результатом
+        config_result.update(
+            {
+                key: config[key] for key in config
+                if key not in config_result and key != key_extend
+            }
+        )
+        return config_result
+# ?END
 
 
 # !решение ментора
 # ?BEGIN (write your solution here)
-# excluded_attrs = ['name', 'tag_type', 'body']
+# class DatabaseConfigLoader():
+#     def __init__(self, path):
+#         self.path_to_config = path
 
+#     def load(self, env):
+#         filename = f'database.{env}.json'
+#         filepath = self.path_to_config / filename
+#         raw_config = json.loads(open(filepath).read())
 
-# def build_attrs(tag):
-#     acc = []
-#     for attr in tag:
-#         if attr not in excluded_attrs:
-#             acc.append(f' {attr}="{tag[attr]}"')
-#     return ''.join(acc)
+#         if 'extend' not in raw_config:
+#             return raw_config
 
-
-# mapping = {
-#     'single': lambda tag: f"<{tag['name']}{build_attrs(tag)}>",
-#     'pair': lambda tag: f"<{tag['name']}{build_attrs(tag)}>{tag['body']}</{tag['name']}>",  # noqa: E501
-# }
-
-
-# def stringify(tag):
-#     build = mapping[tag['tag_type']]
-#     return build(tag)
+#         extend = raw_config['extend']
+#         rest = {k: v for k, v in raw_config.items() if k != 'extend'}
+#         return {**self.load(extend), **rest}   # для python 3.5 и выше
+#         return self.load(extend) | rest   # для python 3.9 и выше
 # ?END
