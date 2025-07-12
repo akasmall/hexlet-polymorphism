@@ -1,19 +1,26 @@
-from in_memory_kv import InMemoryKV
-from solution import swap_key_value
+from user import User
+from subscription import Subscription
 
 
-def test_swap_key_value():
-    map = InMemoryKV({'key': 10})
-    map.set_('key2', 'value2')
-    swap_key_value(map)
-
-    assert map.get_('key') is None
-    assert map.get_(10) == 'key'
-    assert map.get_('value2') == 'key2'
+def test_subscription():
+    user = User('vasya@email.com', Subscription('premium'))
+    assert user.get_current_subscription().has_premium_access()
+    assert not user.get_current_subscription().has_professional_access()
 
 
-def test_swap_key_value2():
-    map = InMemoryKV({'foo': 'bar', 'bar': 'zoo'})
+def test_subscription_2():
+    user = User('vasya@email.com', Subscription('professional'))
+    assert not user.get_current_subscription().has_premium_access()
+    assert user.get_current_subscription().has_professional_access()
 
-    swap_key_value(map)
-    assert map.to_dict() == {'bar': 'foo', 'zoo': 'bar'}
+
+def test_subscription_3():
+    user = User('vasya@email.com')
+    assert not user.get_current_subscription().has_premium_access()
+    assert not user.get_current_subscription().has_professional_access()
+
+
+def test_subscription_4():
+    user = User('rakhim@hexlet.io')  # администратор, проверяется по емейлу
+    assert user.get_current_subscription().has_premium_access()
+    assert user.get_current_subscription().has_professional_access()
