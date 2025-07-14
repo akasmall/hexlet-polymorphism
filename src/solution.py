@@ -1,28 +1,21 @@
+
 # ?BEGIN (write your solution here)
-# from in_memory_kv import InMemoryKV
-
-
-def swap_key_value(obj):
-    obj.new_dist = dict(zip(obj.new_dist.values(), obj.new_dist.keys()))
-
-
-# map = InMemoryKV({'key': 10})
-# print(map.get_('key'))
-# map.set_('key2', 'value2')
-# print(map.get_('key2'))
-# print(swap_key_value(map))
-
-
+def greet(obj):
+    if obj.is_user():
+        return f"Hello {obj.get_name()}!"
+    else:
+        return "Nice to meet you Guest!"
 # ?END
 
 
 # !решение ментора
-# BEGIN
-# \\def swap_key_value(map):
-# \\    data = map.to_dict()
-# \\    for key in data:
-# \\        map.unset_(key)
+# ?BEGIN
+# \\MAPPING = {
+# \\    'guest': lambda guest: f'Nice to meet you {guest.get_name()}!',
+# \\    'user': lambda user: f'Hello {user.get_name()}!',
+# \\}
 
-# \\    for key, value in data.items():
-# \\        map.set_(value, key)
-# END
+
+# \\def greet(some_user):
+# \\    return MAPPING[some_user.get_type()](some_user)
+# ?END

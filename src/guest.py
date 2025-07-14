@@ -1,8 +1,8 @@
-class User:
-    def __init__(self, name):
-        self.name = name
+class Guest:
+    def __init__(self):
+        self.name = 'Guest'
         # BEGIN (write your solution here)
-        self._is_user = True
+        self._is_user = False
         # END
 
     def get_name(self):
@@ -10,15 +10,15 @@ class User:
 
     # BEGIN (write your solution here)
     def is_user(self):
-        return True
+        return False
     # END
 
 # !решение ментора
-# \\class User:
-# \\    def __init__(self, name):
-# \\        self.name = name
+# \\class Guest:
+# \\    def __init__(self):
+# \\        self.name = 'Guest'
 #         # BEGIN
-# \\        self.type = 'user'
+# \\        self.type = 'guest'
 #         # END
 
 # \\    def get_name(self):
