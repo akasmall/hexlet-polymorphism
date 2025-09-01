@@ -5,7 +5,6 @@ def defmethod(type_name, method_name, fn):
     if type_name not in _virtual_table:
         _virtual_table[type_name] = {}
     _virtual_table[type_name][method_name] = fn
-    qwe = 1
 
 
 def call(obj, full_method_name, args):
